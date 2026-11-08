@@ -17,7 +17,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 18
-        cache: 'npm'
 
     - name: Install dependencies
       run: npm install
@@ -36,13 +35,19 @@ jobs:
 
     - name: Sync Capacitor Android
       run: |
-        npx cap npx cap add android --if-present
+        npx cap add android --if-present
         npx cap sync android
 
     - name: Build APK with Gradle
       run: |
-        cd android
-        ./gradlew assembleDebug
+        if [ -d "android" ]; then
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+        else
+          echo "Android folder not found! Please make sure you have added android platform."
+          exit 1
+        fi
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
