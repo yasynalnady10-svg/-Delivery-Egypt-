@@ -35,7 +35,9 @@ jobs:
 
     - name: Sync Capacitor Android
       run: |
-        npx cap add android --if-present
+        if [ ! -d "android" ]; then
+          npx cap add android
+        fi
         npx cap sync android
 
     - name: Build APK with Gradle
@@ -45,7 +47,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
         else
-          echo "Android folder not found! Please make sure you have added android platform."
+          echo "Android folder not found!"
           exit 1
         fi
 
